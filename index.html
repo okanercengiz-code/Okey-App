@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Okey Skor</title>
+<style>
+body{font-family:Arial;background:#111;color:#fff;margin:0}
+h2{margin:0;padding:10px;background:#222}
+.container{padding:10px}
+.card{background:#1c1c1c;padding:10px;margin:8px 0;border-radius:8px}
+input{padding:6px;margin:3px;width:60%}
+button{padding:6px;margin:3px;border:0;border-radius:6px}
+.add{background:#28a745;color:#fff}
+.next{background:#007bff;color:#fff;width:100%}
+.reset{background:red;color:#fff;width:100%}
+.top{padding:10px;background:#222}
+</style>
+</head>
+
+<body>
+
+<h2>🎲 Okey Puan Takip</h2>
+
+<div class="top">
+Toplam Tur: <input id="total" type="number" value="10" style="width:60px">
+<button onclick="setRounds()">Ayarla</button>
+<br><br>
+Tur: <span id="round">1</span> / <span id="max">10</span>
+</div>
+
+<div class="container">
+
+<div>
+<input id="name" placeholder="Oyuncu adı">
+<button class="add" onclick="add()">Ekle</button>
+</div>
+
+<div id="list"></div>
+
+<button class="next" onclick="nextRound()">Tur Bitti</button>
+<button class="reset" onclick="reset()">Sıfırla</button>
+
+</div>
+
+<script>
+
+let players=[];
+let round=1;
+let maxRound=10;
+
+function setRounds(){
+maxRound=parseInt(document.getElementById("total").value||10);
+render();
+}
+
+function add(){
+let n=document.getElementById("name").value.trim();
+if(!n)return;
+players.push({name:n,score:0});
+document.getElementById("name").value="";
+render();
+}
+
+function addScore(i){
+let v=parseInt(prompt("Puan gir (+/-):"));
+if(isNaN(v))return;
+players[i].score+=v;
+render();
+}
+
+function nextRound(){
+if(round>=maxRound)return alert("Oyun bitti!");
+round++;
+render();
+}
+
+function reset(){
+players=[];
+round=1;
+render();
+}
+
+function render(){
+
+document.getElementById("round").innerText=round;
+document.getElementById("max").innerText=maxRound;
+
+let html="";
+
+for(let i=0;i<players.length;i++){
+let p=players[i];
+
+html+=
+"<div class='card'>"+
+"<b>"+p.name+"</b><br>"+
+"Skor: "+p.score+
+"<button onclick='addScore("+i+")'>Puan Ekle</button>"+
+"</div>";
+}
+
+document.getElementById("list").innerHTML=html;
+}
+
+render();
+
+</script>
+
+</body>
+</html>
