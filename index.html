@@ -2,65 +2,99 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Okey Takip</title>
+<title>Okey Skor</title>
+<style>
+body{font-family:Arial;background:#111;color:#fff;margin:0}
+h2{margin:0;padding:10px;background:#222}
+.container{padding:10px}
+.card{background:#1c1c1c;padding:10px;margin:8px 0;border-radius:8px}
+input{padding:6px;margin:3px;width:60%}
+button{padding:6px;margin:3px;border:0;border-radius:6px}
+.add{background:#28a745;color:#fff}
+.next{background:#007bff;color:#fff;width:100%}
+.reset{background:red;color:#fff;width:100%}
+.top{padding:10px;background:#222}
+</style>
 </head>
 
-<body style="font-family:Arial;background:#111;color:white;margin:0;padding:10px">
+<body>
 
-<h2>Tur: <span id="tur">1</span></h2>
+<h2>🎲 Okey Puan Takip</h2>
 
+<div class="top">
+Toplam Tur: <input id="total" type="number" value="10" style="width:60px">
+<button onclick="setRounds()">Ayarla</button>
+<br><br>
+Tur: <span id="round">1</span> / <span id="max">10</span>
+</div>
+
+<div class="container">
+
+<div>
 <input id="name" placeholder="Oyuncu adı">
-<button onclick="add()">Ekle</button>
-<button onclick="next()">Tur +</button>
-<button onclick="reset()">Sıfırla</button>
-
-<hr>
+<button class="add" onclick="add()">Ekle</button>
+</div>
 
 <div id="list"></div>
 
+<button class="next" onclick="nextRound()">Tur Bitti</button>
+<button class="reset" onclick="reset()">Sıfırla</button>
+
+</div>
+
 <script>
-let tur=1;
-let p=[];
+
+let players=[];
+let round=1;
+let maxRound=10;
+
+function setRounds(){
+maxRound=parseInt(document.getElementById("total").value||10);
+render();
+}
 
 function add(){
-let n=document.getElementById("name").value;
+let n=document.getElementById("name").value.trim();
 if(!n)return;
-p.push({n:n,s:0});
+players.push({name:n,score:0});
+document.getElementById("name").value="";
 render();
 }
 
-function score(i,v){
-p[i].s+=v;
+function addScore(i){
+let v=parseInt(prompt("Puan gir (+/-):"));
+if(isNaN(v))return;
+players[i].score+=v;
 render();
 }
 
-function del(i){
-p.splice(i,1);
+function nextRound(){
+if(round>=maxRound)return alert("Oyun bitti!");
+round++;
 render();
-}
-
-function next(){
-tur++;
-document.getElementById("tur").innerText=tur;
 }
 
 function reset(){
-p=[];
+players=[];
+round=1;
 render();
 }
 
 function render(){
-p.sort((a,b)=>b.s-a.s);
+
+document.getElementById("round").innerText=round;
+document.getElementById("max").innerText=maxRound;
 
 let html="";
-for(let i=0;i<p.length;i++){
-let x=p[i];
+
+for(let i=0;i<players.length;i++){
+let p=players[i];
+
 html+=
-"<div style='padding:8px;border-bottom:1px solid #333'>"+
-x.n+" | "+x.s+
-" <button onclick='score("+i+",1)'>+1</button>"+
-" <button onclick='score("+i+",-1)'>-1</button>"+
-" <button onclick='del("+i+")'>Sil</button>"+
+"<div class='card'>"+
+"<b>"+p.name+"</b><br>"+
+"Skor: "+p.score+
+"<button onclick='addScore("+i+")'>Puan Ekle</button>"+
 "</div>";
 }
 
@@ -68,6 +102,7 @@ document.getElementById("list").innerHTML=html;
 }
 
 render();
+
 </script>
 
 </body>
