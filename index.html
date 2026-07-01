@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Okey Takip</title>
+</head>
+
+<body style="font-family:Arial;background:#111;color:white;margin:0;padding:10px">
+
+<h2>Tur: <span id="tur">1</span></h2>
+
+<input id="name" placeholder="Oyuncu adı">
+<button onclick="add()">Ekle</button>
+<button onclick="next()">Tur +</button>
+<button onclick="reset()">Sıfırla</button>
+
+<hr>
+
+<div id="list"></div>
+
+<script>
+let tur=1;
+let p=[];
+
+function add(){
+let n=document.getElementById("name").value;
+if(!n)return;
+p.push({n:n,s:0});
+render();
+}
+
+function score(i,v){
+p[i].s+=v;
+render();
+}
+
+function del(i){
+p.splice(i,1);
+render();
+}
+
+function next(){
+tur++;
+document.getElementById("tur").innerText=tur;
+}
+
+function reset(){
+p=[];
+render();
+}
+
+function render(){
+p.sort((a,b)=>b.s-a.s);
+
+let html="";
+for(let i=0;i<p.length;i++){
+let x=p[i];
+html+=
+"<div style='padding:8px;border-bottom:1px solid #333'>"+
+x.n+" | "+x.s+
+" <button onclick='score("+i+",1)'>+1</button>"+
+" <button onclick='score("+i+",-1)'>-1</button>"+
+" <button onclick='del("+i+")'>Sil</button>"+
+"</div>";
+}
+
+document.getElementById("list").innerHTML=html;
+}
+
+render();
+</script>
+
+</body>
+</html>
